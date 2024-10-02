@@ -1,5 +1,9 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+//  XpertFive9Chat.swift
+//  XpertFive9Chat
+//
+//  Created by Anton Yarmolenka on 19/09/2024.
+//
 
 import SwiftUI
 

@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  UIApplication+UIWindow.swift
 //  XpertFive9Chat
 //
-//  Created by Anton Yarmolenka on 24/09/2024.
+//  Created by Anton Yarmolenka on 19/09/2024.
 //
 
 import Foundation
