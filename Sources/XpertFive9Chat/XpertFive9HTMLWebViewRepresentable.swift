@@ -65,18 +65,31 @@ struct XpertFive9HTMLWebViewRepresentable: UIViewRepresentable {
             name: WKScriptEvent.clickedFive9.rawValue
         )
         
+        #if DEBUG
+//            addReloadButtonForDebug(webView: webView, context: context)
+        #endif
+        
         return webView
     }
     
+    func addReloadButtonForDebug(webView: WKWebView, context: Context) {
+        let button = UIButton(type: .custom)
+        button.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        button.backgroundColor = .red
+        button.addTarget(
+            context.coordinator,
+            action: #selector(XpertFive9HTMLWebViewRepresentable.Coordinator.reloadInnerHTML),
+            for: .touchUpInside
+        )
+        webView.addSubview(button)
+    }
+    
     func updateUIView(_ webView: WKWebView, context: Context) {
+        context.coordinator.wkWebview = webView
         if let html = html, html != context.coordinator.previousHTML {
             webView.loadHTMLString(html, baseURL: baseURL)
             context.coordinator.previousHTML = html
         }
-//        if clickedFive9 && UIDevice.current.userInterfaceIdiom == .pad {
-//            webView.scrollView.backgroundColor = .clear
-//            webView.isOpaque = false
-//        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -109,10 +122,18 @@ extension XpertFive9HTMLWebViewRepresentable {
 
         public var previousHTML: String?
         
+        weak var wkWebview: WKWebView?
+
         init(closeChat: Binding<Bool>, openedChat: Binding<Bool>, clickedFive9: Binding<Bool>) {
             self._closeChat = closeChat
             self._openedChat = openedChat
             self._clickedFive9 = clickedFive9
+        }
+        
+        @objc
+        func reloadInnerHTML() {
+            guard let html = previousHTML else { return }
+            wkWebview?.loadHTMLString(html, baseURL: nil)
         }
         
         func userContentController(
