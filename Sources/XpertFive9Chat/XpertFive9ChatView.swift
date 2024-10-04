@@ -20,18 +20,33 @@ public struct XpertFive9ChatView: View {
     }
     
     public var body: some View {
-        ZStack {
-            XpertFive9HTMLWebViewRepresentable(
-                html: model.xpertHTML,
-                baseURL: nil,
-                closeChat: $closeChat,
-                openedChat: $chatIsOpened,
-                clickedFive9: $clickedFive9
-            )
-            .ignoresSafeArea(.keyboard)
-            ProgressView()
-                .opacity(clickedFive9 || chatIsOpened ? 0 : 1)
-                .tint(.gray)
+        VStack {
+            HStack(alignment: .center) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("Done")
+                        .foregroundColor(.blue)
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                Spacer()
+            }
+            .frame(height: 30)
+            .padding(0)
+            ZStack {
+                XpertFive9HTMLWebViewRepresentable(
+                    html: model.xpertHTML,
+                    baseURL: nil,
+                    closeChat: $closeChat,
+                    openedChat: $chatIsOpened,
+                    clickedFive9: $clickedFive9
+                )
+                .ignoresSafeArea(.keyboard)
+                ProgressView()
+                    .opacity(clickedFive9 || chatIsOpened ? 0 : 1)
+                    .tint(.gray)
+            }
         }
         .onChange(of: closeChat) { newValue in
             if newValue {

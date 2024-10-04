@@ -43,7 +43,6 @@ struct XpertFive9HTMLWebViewRepresentable: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
-        webView.backgroundColor = .clear
 
         #if DEBUG
         if #available(iOS 16.4, *) {
@@ -74,10 +73,10 @@ struct XpertFive9HTMLWebViewRepresentable: UIViewRepresentable {
             webView.loadHTMLString(html, baseURL: baseURL)
             context.coordinator.previousHTML = html
         }
-        if clickedFive9 && UIDevice.current.userInterfaceIdiom == .pad {
-            webView.scrollView.backgroundColor = .clear
-            webView.isOpaque = false
-        }
+//        if clickedFive9 && UIDevice.current.userInterfaceIdiom == .pad {
+//            webView.scrollView.backgroundColor = .clear
+//            webView.isOpaque = false
+//        }
     }
     
     func makeCoordinator() -> Coordinator {

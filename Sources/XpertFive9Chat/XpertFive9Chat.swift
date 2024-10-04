@@ -18,9 +18,6 @@ public class XpertFive9Chat {
             let controller = UIHostingController(rootView: chatView)
             controller.modalTransitionStyle = .coverVertical
             controller.modalPresentationStyle = .automatic
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                controller.view.backgroundColor = .clear
-            }
             topController.present(controller, animated: animated)
         }
     }
