@@ -55,6 +55,8 @@ public class XpertFive9ChatViewModel: ObservableObject {
                 <script type="module" src="https://chatbot-frontend.prod.ai.2u.com/@latest/index.min.js"></script>
                 <script type="text/javascript" async="" src="https://cdn.segment.com/analytics.js/v1/###SEGMENTKEY###/analytics.min.js"></script>
                 <script>
+                    var five9OpenButtonListenerAdded = false;
+                    var xpertCloseButtonListenerAdded = false;
                     function f9CallbackFunc(event) {
                         try {
                             switch (event.type) {
@@ -65,6 +67,15 @@ public class XpertFive9ChatViewModel: ObservableObject {
                                 break;
                         }
                         } catch (exception) {}
+                    }
+                    function checkFive9WidgetVisisbility() {
+                        var widget = document.getElementById("five9LiveChatWidget");
+                        var five9Button = document.getElementById("five9OpenChatButton"); 
+                        if (widget != undefined && five9Button != undefined) {
+                            if (widget.style["display"] == 'none') {
+                                five9Button.click();
+                            }
+                        }
                     }
                     document.addEventListener(
                         "DOMSubtreeModified",
@@ -81,7 +92,8 @@ public class XpertFive9ChatViewModel: ObservableObject {
                                 }
                             }
                             var xpertCloseButton = document.getElementsByClassName("xpert-chatbot-popup__header--btn-outline")[0];
-                            if (xpertCloseButton != undefined) {
+                            if (xpertCloseButton != undefined && !xpertCloseButtonListenerAdded) {
+                                xpertCloseButtonListenerAdded = true;
                                 xpertCloseButton.addEventListener(
                                     "click",
                                     function(e) {
@@ -98,13 +110,19 @@ public class XpertFive9ChatViewModel: ObservableObject {
                             if (launchMessage != undefined) {
                                 launchMessage.style["display"] = 'none';
                             }
-                            Five9ChatSetOption("callback", f9CallbackFunc);
+                            if (typeof Five9ChatSetOption === "function") { 
+                                Five9ChatSetOption("callback", f9CallbackFunc);
+                            }
                             var five9OpenButton = document.getElementsByClassName("xpert-chatbot-popup__live-chat--btn-outline")[0];
-                            if (five9OpenButton != undefined) {
+                            if (five9OpenButton != undefined && !five9OpenButtonListenerAdded) {
+                                five9OpenButtonListenerAdded = true;
                                 five9OpenButton.addEventListener(
                                     "click",
                                     function(e) {
                                         window.webkit.messageHandlers.###clickedFive9###.postMessage("###clickedFive9###");
+                                        setTimeout(() => {
+                                            checkFive9WidgetVisisbility();
+                                        }, 1000);
                                     },
                                     false
                                 );
