@@ -16,6 +16,9 @@ public class XpertFive9ChatViewModel: ObservableObject {
         
     // swiftlint:disable line_length
     // MARK: Xpert
+    public var baseURL: URL? {
+        xpertConfiguration.baseURL
+    }
     public var xpertHTML: String {
         """
         <html>

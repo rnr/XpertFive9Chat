@@ -37,7 +37,7 @@ public struct XpertFive9ChatView: View {
             ZStack {
                 XpertFive9HTMLWebViewRepresentable(
                     html: model.xpertHTML,
-                    baseURL: nil,
+                    baseURL: model.baseURL,
                     closeChat: $closeChat,
                     openedChat: $chatIsOpened,
                     clickedFive9: $clickedFive9
@@ -60,7 +60,7 @@ public struct XpertFive9ChatView: View {
 #if DEBUG
 struct XpertFive9ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        let xpertConfig = XpertChatConfiguration(xpertKey: "", useCase: "", segmentKey: "")
+        let xpertConfig = XpertChatConfiguration(xpertKey: "", useCase: "", segmentKey: "", baseURL: nil)
         XpertFive9ChatView(xpertConfig: xpertConfig)
     }
 }

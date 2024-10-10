@@ -12,12 +12,14 @@ public struct XpertChatConfiguration {
     var xpertKey: String
     var useCase: String
     var segmentKey: String
+    var baseURL: URL?
     var five9Enabled: Bool
     
-    public init(xpertKey: String, useCase: String, segmentKey: String, five9Enabled: Bool = true) {
+    public init(xpertKey: String, useCase: String, segmentKey: String, baseURL: URL?, five9Enabled: Bool = true) {
         self.xpertKey = xpertKey
         self.useCase = useCase
         self.segmentKey = segmentKey
+        self.baseURL = baseURL
         self.five9Enabled = five9Enabled
     }
     
