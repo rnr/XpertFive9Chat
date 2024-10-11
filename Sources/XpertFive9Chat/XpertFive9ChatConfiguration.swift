@@ -46,3 +46,166 @@ public struct XpertChatConfiguration {
         }
     }
 }
+
+// Five9
+public struct Five9FormData {
+    var fields: [Five9FormFieldType]?
+    var firstName: String?
+    var lastName: String?
+    var name: String?
+    var email: String?
+    var emailLabel: String?
+    var questionLabel: String?
+    var statictextLabel: String?
+    
+    public init(
+        fields: [Five9FormFieldType]? = nil,
+        firstName: String? = nil,
+        lastName: String? = nil,
+        name: String? = nil,
+        email: String? = nil,
+        emailLabel: String? = nil,
+        questionLabel: String? = nil,
+        statictextLabel: String? = nil
+    ) {
+        self.fields = fields
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.emailLabel = emailLabel
+        if name == nil {
+            if let firstName, let lastName {
+                self.name = "\(firstName) \(lastName)"
+            }
+        } else {
+            self.name = name
+        }
+        self.questionLabel = questionLabel
+        self.statictextLabel = statictextLabel
+    }
+}
+
+public enum Five9FormFieldType: String, Codable {
+    case contactName = "contact.name"
+    case contactEmail = "contact.email"
+    case contactFirstName = "contact.firstname"
+    case contactLastName = "contact.lastname"
+    case question
+    case staticText = "static text"
+    case unknown
+    
+    public init(from decoder: Decoder) throws {
+        self = try Five9FormFieldType(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
+    }
+    
+}
+
+public struct Five9FormConfiguration {
+    var formData: Five9FormData?
+    
+    public init(formData: Five9FormData? = nil) {
+        self.formData = formData
+    }
+    
+    public var formDataString: String {
+        guard let fields = formData?.fields, fields.count > 0 else { return "" }
+        var returnString: String = ""
+        returnString += "formData: ["
+        for field in fields {
+            returnString += stringForFieldType(field)
+        }
+        returnString += "]"
+        return returnString
+            .replacingOccurrences(of: "###NAME###", with: formData?.name ?? "")
+            .replacingOccurrences(of: "###EMAIL###", with: formData?.email ?? "")
+            .replacingOccurrences(of: "###FIRSTNAME###", with: formData?.firstName ?? "")
+            .replacingOccurrences(of: "###LASTNAME###", with: formData?.lastName ?? "")
+    }
+}
+
+extension Five9FormConfiguration {
+    private func stringForFieldType(_ fieldType: Five9FormFieldType) -> String {
+        var returnString: String = ""
+        if fieldType != .unknown {
+            returnString += """
+            {
+                "type": "hidden",
+                "formType": "both",
+                "required": false
+            },
+            """
+        }
+        switch fieldType {
+        case .contactName:
+            returnString += """
+            {
+                "label": "Name",
+                "cav": "contact.name",
+                "formType": "both",
+                "type": "text",
+                "required": true,
+                "readOnly": false,
+                "value": "###NAME###"
+            },
+            """
+        case .contactEmail:
+            returnString += """
+            {
+                "label": "\(formData?.emailLabel ?? "Email")",
+                "cav": "contact.email",
+                "formType": "both",
+                "type": "email",
+                "required": true,
+                "value": "###EMAIL###"
+            },
+            """
+        case .contactFirstName:
+            returnString +=  """
+            {
+                "label": "First Name",
+                "cav": "contact.firstName",
+                "formType": "both",
+                "type": "text",
+                "required": true,
+                "readOnly": false,
+                "value": "###FIRSTNAME###"
+            },
+            """
+        case .contactLastName:
+            returnString +=  """
+            {
+                "label": "Last Name",
+                "cav": "contact.lastName",
+                "formType": "both",
+                "type": "text",
+                "required": true,
+                "readOnly": false,
+                "value": "###LASTNAME###"
+            },
+            """
+        case .question:
+            returnString +=  """
+            {
+                "label": "\(formData?.questionLabel ?? "Question")",
+                "cav": "Question",
+                "formType": "both",
+                "type": "textarea",
+                "required": true,
+                "readOnly": false
+            },
+            """
+        case .staticText:
+            returnString +=  """
+            {
+                "type": "static text",
+                "formType": "both",
+                "required": false,
+                "label": '\(formData?.statictextLabel ?? "")'
+            }
+            """
+        case .unknown:
+            break
+        }
+        return returnString
+    }
+}

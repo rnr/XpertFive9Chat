@@ -8,16 +8,17 @@
 import Foundation
 
 public class XpertFive9ChatViewModel: ObservableObject {
-    private var xpertConfiguration: XpertChatConfiguration
+    private var xpertConfig: XpertChatConfiguration
+    private var five9Config: Five9FormConfiguration?
     
-    init(xpertConfig: XpertChatConfiguration) {
-        self.xpertConfiguration = xpertConfig
+    init(xpertConfig: XpertChatConfiguration, five9Config: Five9FormConfiguration? = nil) {
+        self.xpertConfig = xpertConfig
+        self.five9Config = five9Config
     }
         
     // swiftlint:disable line_length
-    // MARK: Xpert
     public var baseURL: URL? {
-        xpertConfiguration.baseURL
+        xpertConfig.baseURL
     }
     public var xpertHTML: String {
         """
@@ -46,9 +47,10 @@ public class XpertFive9ChatViewModel: ObservableObject {
                             ###USE_CASE###
                             conversationScreen: {
                                 liveChat: {
-                                    enabled: \(xpertConfiguration.five9Enabled ? "true" : "false"),
+                                    enabled: \(xpertConfig.five9Enabled ? "true" : "false"),
                                     options: {
-                                        allowPopout: false
+                                        allowPopout: false,
+                                        ###FORM_DATA###
                                     },
                                 },
                             },
@@ -137,12 +139,13 @@ public class XpertFive9ChatViewModel: ObservableObject {
             </body>
         </html>
         """
-            .replacingOccurrences(of: "###XPERT_KEY###", with: xpertConfiguration.xpertKey)
-            .replacingOccurrences(of: "###USE_CASE###", with: xpertConfiguration.useCaseString)
-            .replacingOccurrences(of: "###SEGMENTKEY###", with: xpertConfiguration.segmentKey)
+            .replacingOccurrences(of: "###XPERT_KEY###", with: xpertConfig.xpertKey)
+            .replacingOccurrences(of: "###USE_CASE###", with: xpertConfig.useCaseString)
+            .replacingOccurrences(of: "###SEGMENTKEY###", with: xpertConfig.segmentKey)
             .replacingOccurrences(of: "###closeChat###", with: WKScriptEvent.closeChat.rawValue)
             .replacingOccurrences(of: "###openedChat###", with: WKScriptEvent.openedChat.rawValue)
             .replacingOccurrences(of: "###clickedFive9###", with: WKScriptEvent.clickedFive9.rawValue)
+            .replacingOccurrences(of: "###FORM_DATA###", with: five9Config?.formDataString ?? "")
     }
     // swiftlint:enable line_length
     

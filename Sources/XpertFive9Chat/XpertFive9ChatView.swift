@@ -15,8 +15,10 @@ public struct XpertFive9ChatView: View {
     @State var chatIsOpened: Bool = false
     @State var clickedFive9: Bool = false
     
-    public init(xpertConfig: XpertChatConfiguration) {
-        self._model = .init(wrappedValue: XpertFive9ChatViewModel(xpertConfig: xpertConfig))
+    public init(xpertConfig: XpertChatConfiguration, five9Config: Five9FormConfiguration?) {
+        self._model = .init(
+            wrappedValue: XpertFive9ChatViewModel(xpertConfig: xpertConfig, five9Config: five9Config)
+        )
     }
     
     public var body: some View {
@@ -61,7 +63,8 @@ public struct XpertFive9ChatView: View {
 struct XpertFive9ChatView_Previews: PreviewProvider {
     static var previews: some View {
         let xpertConfig = XpertChatConfiguration(xpertKey: "", useCase: "", segmentKey: "", baseURL: nil)
-        XpertFive9ChatView(xpertConfig: xpertConfig)
+        let five9Config = Five9FormConfiguration()
+        XpertFive9ChatView(xpertConfig: xpertConfig, five9Config: five9Config)
     }
 }
 #endif
