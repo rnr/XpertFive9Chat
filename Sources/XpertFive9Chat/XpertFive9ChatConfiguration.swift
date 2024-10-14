@@ -57,6 +57,8 @@ public struct Five9FormData {
     var emailLabel: String?
     var questionLabel: String?
     var statictextLabel: String?
+    var dropDownOptions: [String]?
+    var dropDownLabel: String?
     
     public init(
         fields: [Five9FormFieldType]? = nil,
@@ -66,7 +68,9 @@ public struct Five9FormData {
         email: String? = nil,
         emailLabel: String? = nil,
         questionLabel: String? = nil,
-        statictextLabel: String? = nil
+        statictextLabel: String? = nil,
+        dropDownOptions: [String]? = nil,
+        dropDownLabel: String? = nil
     ) {
         self.fields = fields
         self.firstName = firstName
@@ -82,6 +86,8 @@ public struct Five9FormData {
         }
         self.questionLabel = questionLabel
         self.statictextLabel = statictextLabel
+        self.dropDownOptions = dropDownOptions
+        self.dropDownLabel = dropDownLabel
     }
 }
 
@@ -92,6 +98,7 @@ public enum Five9FormFieldType: String, Codable {
     case contactLastName = "contact.lastname"
     case question
     case staticText = "static text"
+    case dropDown = "drop down"
     case unknown
     
     public init(from decoder: Decoder) throws {
@@ -201,7 +208,29 @@ extension Five9FormConfiguration {
                 "formType": "both",
                 "required": false,
                 "label": '\(formData?.statictextLabel ?? "")'
+            },
+            """
+        case .dropDown:
+            returnString += """
+            {
+                "type": "select",
+                "formType": "both",
+                "required": true,
+                "label": "\(formData?.dropDownLabel ?? "Subject")",
+                "cav": "Drop Down",
+                "options": [
+            """
+            for option in formData?.dropDownOptions ?? [] {
+                returnString += """
+                {
+                    "label": "\(option)",
+                    "value": ""
+                },
+                """
             }
+            returnString += """
+                ]
+            },
             """
         case .unknown:
             break
